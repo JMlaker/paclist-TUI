@@ -1,6 +1,13 @@
+# Binary -- primarily used for testing, finished will insert binary into a /bin somewhere
 **/paclist
 
+# I have a pure hate relationship with these apple files
 .DS_Store
 **/.DS_Store
 
+# I have a love/hate relationship with vscode
 **/.vscode
+
+# Test files for development
+**/brew-example*.json
+**/*.out

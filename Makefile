@@ -3,8 +3,7 @@ CFLAGS := -std=gnu18 -Wall -Wextra -Werror -pedantic -O2
 
 VFLAGS := --leak-check=full --show-leak-kinds=all  --track-origins=yes
 
-SRC := paclist.c package.c osx-handle.c
-SRC := $(addprefix src/, $(SRC))
+SRC := $(wildcard ls src/*.c)
 
 TARGET := paclist
 
@@ -17,9 +16,6 @@ all: run
 
 $(TARGET): $(SRC)
 	@$(CC) $(CFLAGS) $^ -lncurses -o $@
-
-$(RELEASEDIR) $(DEBUGDIR):
-	mkdir -p $@
 
 clean:
 	rm -rf $(BUILDDIR) $(TARGET)
