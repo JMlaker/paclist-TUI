@@ -1,3 +1,4 @@
+#ifdef __APPLE__
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,8 +6,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "osx-handle.h"
-#include "cJSON.h"
+#include "osx-handler.h"
+#include "cJSON/cJSON.h"
 
 #define CHUNK_SIZE 4096
 
@@ -205,3 +206,4 @@ void *fill_info(void *pkg_list) {
   
   return NULL;
 }
+#endif

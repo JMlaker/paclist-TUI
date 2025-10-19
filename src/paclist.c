@@ -1,9 +1,10 @@
 #include <ncurses.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 #include "paclist.h"
+
+#define desc_ptr 28
 
 int select_str(int sel, char **str, int up_down, int max_sel);
 
@@ -16,8 +17,9 @@ int main(void) {
 
   int x, y;
   getmaxyx(win, y, x);
+	(void) x;
 
-  package_list *packages = osx_pkgs();
+  package_list *packages = GETPACKAGES();
 
   attron(A_REVERSE);
   printw("%s", packages->pkg[0].name);
@@ -37,10 +39,20 @@ int main(void) {
   while ((a = getch()) != 'q') {
     if (a == KEY_DOWN) {
       str_select = select_str(str_select, names, 1, packages->len);
+      mvprintw(getcury(win), desc_ptr, "|");
+      char* desc = packages->pkg[str_select].desc;
+      if (!desc || !atomic_load(&packages->pkg[str_select].rdy))
+        desc = "Not ready yet";
+      mvprintw(getcury(win), desc_ptr + 2, "%s", desc);
       refresh();
     }
     if (a == KEY_UP) {
 			str_select = select_str(str_select, names, 0, packages->len);
+      mvprintw(getcury(win), desc_ptr, "|");
+      char* desc = packages->pkg[str_select].desc;
+      if (!desc || !atomic_load(&packages->pkg[str_select].rdy))
+        desc = "Not ready yet";
+      mvprintw(getcury(win), desc_ptr + 2, "%s", desc);
       refresh();
     }
   }
@@ -69,10 +81,10 @@ int select_str(int sel, char **str, int up_down, int max_sel) {
 	int index = 0;
 	if (up_down) {
 		// If selecting downward, move the screen down if needed
-		index = (cur_y >= y - 1) ? sel - y + 1 : 0;
+		index = (cur_y >= y - 1) ? sel - y + 1 : sel - cur_y - 1;
 	} else {
 		// If selecting upward, move the screen up if needed
-		index = (cur_y <= 0) ? sel: sel - cur_y + 1;
+		index = (cur_y <= 0) ? sel : sel - cur_y + 1;
 	}
   for (int i = 0; i < y; i++) {
     if (i == sel - index) attron(A_REVERSE);

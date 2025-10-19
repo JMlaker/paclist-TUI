@@ -1,6 +1,8 @@
 #ifndef PACKAGE_H
 #define PACKAGE_H
 
+#include "stdatomic.h"
+
 typedef struct package {
   char *name;
   char *full_name;
@@ -10,6 +12,7 @@ typedef struct package {
   int dep_len;
   char **deps;
   char is_dep;
+  atomic_bool rdy;
 } package;
 
 typedef struct package_list {
